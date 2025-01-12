@@ -10,7 +10,7 @@ This repository contains the necessary files for the execution.
 
 Early requriments for the project:
 
-- Vivado 2019.1 **VERY IMPORTANT! USE JUST THIS VERSION** (https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html)
+- Vivado 2019.1 (**VERY IMPORTANT! USE JUST THIS VERSION!**) (https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html)
 - Vivado boards (https://github.com/Digilent/vivado-boards)
 - Vivado library master (https://github.com/Digilent/vivado-library)
 - Tera Term (https://teratermproject.github.io/index-en.html) or you can use any terminal for the uart communicaton.
