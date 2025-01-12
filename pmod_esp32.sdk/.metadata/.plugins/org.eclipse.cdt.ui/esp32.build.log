@@ -1,0 +1,6 @@
+12:25:19 **** Incremental Build of configuration Debug for project esp32 ****
+make all 
+make: Nothing to be done for 'all'.
+
+12:25:19 Build Finished (took 578ms)
+

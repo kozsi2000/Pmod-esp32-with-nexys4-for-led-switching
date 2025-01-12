@@ -1,0 +1,21 @@
+14:10:08 **** Auto Build of configuration Debug for project pmods ****
+make all 
+'Building file: ../src/platform.c'
+'Invoking: MicroBlaze gcc compiler'
+mb-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/platform.o" -I../../pmods_bsp/microblaze_0/include -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -Wl,--no-relax -ffunction-sections -fdata-sections -MMD -MP -MF"src/platform.d" -MT"src/platform.o" -o "src/platform.o" "../src/platform.c"
+'Finished building: ../src/platform.c'
+' '
+'Building target: pmods.elf'
+'Invoking: MicroBlaze gcc linker'
+mb-gcc -Wl,-T -Wl,../src/lscript.ld -L../../pmods_bsp/microblaze_0/lib -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -Wl,--no-relax -Wl,--gc-sections -o "pmods.elf"  ./src/helloworld.o ./src/platform.o   -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
+'Finished building target: pmods.elf'
+' '
+'Invoking: MicroBlaze Print Size'
+mb-size pmods.elf  |tee "pmods.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+   3180	    312	   3108	   6600	   19c8	pmods.elf
+'Finished building: pmods.elf.size'
+' '
+
+14:10:09 Build Finished (took 1s.381ms)
+

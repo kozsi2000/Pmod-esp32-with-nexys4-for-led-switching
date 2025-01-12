@@ -1,0 +1,121 @@
+09:15:49 **** Incremental Build of configuration Debug for project esp32 ****
+make all 
+make: Nothing to be done for 'all'.
+09:15:54 **** Incremental Build of configuration Debug for project esp32 ****
+make all 
+make: Nothing to be done for 'all'.
+09:18:23 **** Incremental Build of configuration Debug for project esp32 ****
+make all 
+make: Nothing to be done for 'all'.
+09:23:54 **** Incremental Build of configuration Debug for project esp32 ****
+make all 
+make: Nothing to be done for 'all'.
+09:26:10 **** Incremental Build of configuration Debug for project esp32 ****
+make all 
+'Building file: ../src/main.c'
+'Invoking: MicroBlaze gcc compiler'
+mb-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/main.o" -I../../esp32_bsp/microblaze_0/include -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -Wl,--no-relax -ffunction-sections -fdata-sections -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.c"
+In file included from ../../esp32_bsp/microblaze_0/include/xuartlite.h:160,
+                 from ../../esp32_bsp/microblaze_0/include/PmodESP32.h:19,
+                 from ../src/main.c:9:
+../src/main.c: In function 'driverInit':
+../../esp32_bsp/microblaze_0/include/xstatus.h:61:41: warning: 'return' with a value, in function returning void
+ #define XST_FAILURE                     1L
+                                         ^~
+../src/main.c:54:16: note: in expansion of macro 'XST_FAILURE'
+         return XST_FAILURE;
+                ^~~~~~~~~~~
+../src/main.c:50:6: note: declared here
+ void driverInit() {
+      ^~~~~~~~~~
+In file included from ../src/main.c:6:
+../src/main.c: In function 'DemoInitialize':
+../../esp32_bsp/microblaze_0/include/xparameters.h:673:38: warning: unsigned conversion from 'int' to 'u16' {aka 'short unsigned int'} changes value from '1080033280' to '0' [-Woverflow]
+ #define XPAR_AXI_UARTLITE_0_BASEADDR 0x40600000
+                                      ^~~~~~~~~~
+../src/main.c:14:29: note: in expansion of macro 'XPAR_AXI_UARTLITE_0_BASEADDR'
+ #define HOST_UART_DEVICE_ID XPAR_AXI_UARTLITE_0_BASEADDR
+                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/main.c:64:36: note: in expansion of macro 'HOST_UART_DEVICE_ID'
+     CfgPtr = HostUart_LookupConfig(HOST_UART_DEVICE_ID);
+                                    ^~~~~~~~~~~~~~~~~~~
+../src/main.c: In function 'processCommand':
+../src/main.c:96:23: warning: implicit declaration of function 'strtol'; did you mean 'strtok'? [-Wimplicit-function-declaration]
+         int led_num = strtol(&command[4], &ptr, 10); // Parse LED number
+                       ^~~~~~
+                       strtok
+'Finished building: ../src/main.c'
+' '
+'Building target: esp32.elf'
+'Invoking: MicroBlaze gcc linker'
+mb-gcc -Wl,-T -Wl,../src/lscript.ld -L../../esp32_bsp/microblaze_0/lib -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -Wl,--no-relax -Wl,--gc-sections -o "esp32.elf"  ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
+'Finished building target: esp32.elf'
+' '
+'Invoking: MicroBlaze Print Size'
+mb-size esp32.elf  |tee "esp32.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  20616	    744	   3304	  24664	   6058	esp32.elf
+'Finished building: esp32.elf.size'
+' '
+09:28:26 **** Auto Build of configuration Debug for project esp32 ****
+make all 
+'Building file: ../src/main.c'
+'Invoking: MicroBlaze gcc compiler'
+mb-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/main.o" -I../../esp32_bsp/microblaze_0/include -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -Wl,--no-relax -ffunction-sections -fdata-sections -MMD -MP -MF"src/main.d" -MT"src/main.o" -o "src/main.o" "../src/main.c"
+In file included from ../../esp32_bsp/microblaze_0/include/xuartlite.h:160,
+                 from ../../esp32_bsp/microblaze_0/include/PmodESP32.h:19,
+                 from ../src/main.c:9:
+../src/main.c: In function 'driverInit':
+../../esp32_bsp/microblaze_0/include/xstatus.h:61:41: warning: 'return' with a value, in function returning void
+ #define XST_FAILURE                     1L
+                                         ^~
+../src/main.c:54:16: note: in expansion of macro 'XST_FAILURE'
+         return XST_FAILURE;
+                ^~~~~~~~~~~
+../src/main.c:50:6: note: declared here
+ void driverInit() {
+      ^~~~~~~~~~
+In file included from ../src/main.c:6:
+../src/main.c: In function 'DemoInitialize':
+../../esp32_bsp/microblaze_0/include/xparameters.h:673:38: warning: unsigned conversion from 'int' to 'u16' {aka 'short unsigned int'} changes value from '1080033280' to '0' [-Woverflow]
+ #define XPAR_AXI_UARTLITE_0_BASEADDR 0x40600000
+                                      ^~~~~~~~~~
+../src/main.c:14:29: note: in expansion of macro 'XPAR_AXI_UARTLITE_0_BASEADDR'
+ #define HOST_UART_DEVICE_ID XPAR_AXI_UARTLITE_0_BASEADDR
+                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/main.c:64:36: note: in expansion of macro 'HOST_UART_DEVICE_ID'
+     CfgPtr = HostUart_LookupConfig(HOST_UART_DEVICE_ID);
+                                    ^~~~~~~~~~~~~~~~~~~
+../src/main.c: In function 'processCommand':
+../src/main.c:96:23: warning: implicit declaration of function 'strtol'; did you mean 'strtok'? [-Wimplicit-function-declaration]
+         int led_num = strtol(&command[4], &ptr, 10); // Parse LED number
+                       ^~~~~~
+                       strtok
+'Finished building: ../src/main.c'
+' '
+'Building target: esp32.elf'
+'Invoking: MicroBlaze gcc linker'
+mb-gcc -Wl,-T -Wl,../src/lscript.ld -L../../esp32_bsp/microblaze_0/lib -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -Wl,--no-relax -Wl,--gc-sections -o "esp32.elf"  ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
+'Finished building target: esp32.elf'
+' '
+'Invoking: MicroBlaze Print Size'
+mb-size esp32.elf  |tee "esp32.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  20616	    744	   3304	  24664	   6058	esp32.elf
+'Finished building: esp32.elf.size'
+' '
+09:29:01 **** Incremental Build of configuration Debug for project esp32 ****
+make all 
+make: Nothing to be done for 'all'.
+16:16:54 **** Incremental Build of configuration Debug for project esp32 ****
+make all 
+make: Nothing to be done for 'all'.
+08:42:50 **** Incremental Build of configuration Debug for project esp32 ****
+make all 
+make: Nothing to be done for 'all'.
+08:48:33 **** Incremental Build of configuration Debug for project esp32 ****
+make all 
+make: Nothing to be done for 'all'.
+12:25:19 **** Incremental Build of configuration Debug for project esp32 ****
+make all 
+make: Nothing to be done for 'all'.

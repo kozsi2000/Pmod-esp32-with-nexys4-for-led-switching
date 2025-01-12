@@ -1,0 +1,220 @@
+/*
+ * main.c - ESP32 Web Server Client Mode
+ * Connects to Wi-Fi and hosts a simple web server.
+ */
+
+#include "xparameters.h"
+#include "xil_printf.h"
+#include "sleep.h"
+#include "PmodESP32.h"
+#include "stdio.h"
+#include "xgpio.h"
+
+#ifdef __MICROBLAZE__
+#define HOST_UART_DEVICE_ID XPAR_AXI_UARTLITE_0_BASEADDR
+#define HostUart XUartLite
+#define HostUart_Config XUartLite_Config
+#define HostUart_CfgInitialize XUartLite_CfgInitialize
+#define HostUart_LookupConfig XUartLite_LookupConfig
+#define HostUart_Recv XUartLite_Recv
+#define HostUartConfig_GetBaseAddr(CfgPtr) (CfgPtr->RegBaseAddr)
+#include "xuartlite.h"
+#include "xil_cache.h"
+#else
+#define HOST_UART_DEVICE_ID XPAR_PS7_UART_1_DEVICE_ID
+#define HostUart XUartPs
+#define HostUart_Config XUartPs_Config
+#define HostUart_CfgInitialize XUartPs_CfgInitialize
+#define HostUart_LookupConfig XUartPs_LookupConfig
+#define HostUart_Recv XUartPs_Recv
+#define HostUartConfig_GetBaseAddr(CfgPtr) (CfgPtr->BaseAddress)
+#include "xuartps.h"
+#endif
+
+#define PMODESP32_UART_BASEADDR XPAR_PMODESP32_0_AXI_LITE_UART_BASEADDR
+#define PMODESP32_GPIO_BASEADDR XPAR_PMODESP32_0_AXI_LITE_GPIO_BASEADDR
+
+void EnableCaches();
+void DisableCaches();
+void DemoInitialize();
+void DemoRun();
+void DemoCleanup();
+
+PmodESP32 myESP32;
+HostUart myHostUart;
+
+XGpio led_gpio;
+
+uint16_t led_mask = 0x0;
+
+void driverInit() {
+    int Status;
+    printf("Initializing GPIO\n");
+    Status = XGpio_Initialize(&led_gpio, XPAR_AXI_GPIO_0_DEVICE_ID);
+    if (Status != XST_SUCCESS) {
+        printf("GPIO initialization failed\n");
+        return XST_FAILURE;
+    } else {
+        printf("GPIO initialization successful\n");
+        XGpio_SetDataDirection(&led_gpio, 1, 0);
+    }
+}
+
+void DemoInitialize() {
+    HostUart_Config *CfgPtr;
+    EnableCaches();
+    ESP32_Initialize(&myESP32, PMODESP32_UART_BASEADDR, PMODESP32_GPIO_BASEADDR);
+    CfgPtr = HostUart_LookupConfig(HOST_UART_DEVICE_ID);
+    HostUart_CfgInitialize(&myHostUart, CfgPtr, HostUartConfig_GetBaseAddr(CfgPtr));
+}
+
+void LedOn(int led) {
+    led_mask |= (1 << led);
+    XGpio_DiscreteWrite(&led_gpio, 1, led_mask);
+}
+
+void LedOff(int led) {
+    led_mask &= ~(1 << led);
+    XGpio_DiscreteWrite(&led_gpio, 1, led_mask);
+}
+
+void sendCommandAndWait(PmodESP32 *esp32, const char *cmd, int cmd_len, int wait_time_ms) {
+    ESP32_SendBuffer(esp32, (u8 *)cmd, cmd_len);
+    usleep(wait_time_ms * 1000); // wait_time_ms -> microseconds
+}
+
+void processCommand(const char *command) {
+    if (strncmp(command, "ledon", 5) == 0) {
+        xil_printf("Turning all LEDs ON\n");
+        for (int i = 0; i < 14; i++) { // Assuming 8 LEDs
+            LedOn(i);
+        }
+    } else if (strncmp(command, "ledoff", 6) == 0) {
+        xil_printf("Turning all LEDs OFF\n");
+        for (int i = 0; i < 14; i++) { // Assuming 8 LEDs
+            LedOff(i);
+        }
+    } else {
+        xil_printf("Unknown command: %s\n", command);
+    }
+}
+
+void DemoRun() {
+    u8 recv_buffer;
+    u32 num_received;
+    char command_buffer[128];
+    int command_index = 0;
+    int client_connected = 0;
+
+    xil_printf("Initializing ESP32 ...\n\r");
+
+    // Reset ESP32
+    xil_printf("Reset sending (AT+RST)...\n\r");
+    sendCommandAndWait(&myESP32, "AT+RST\n\n", 8, 2000);
+
+    // Set ESP32 to Station Mode
+    xil_printf("Setting ESP32 to Station Mode (AT+CWMODE=1)...\n\r");
+    sendCommandAndWait(&myESP32, "AT+CWMODE=1\r\r", 13, 2000);
+
+    // Connect to Wi-Fi
+    xil_printf("Connecting to Wi-Fi Network (AT+CWJAP)...\n\r");
+    sendCommandAndWait(&myESP32, "AT+CWJAP=\"RezmuvesDiorDzsumandzsi\",\"ManoMaci1017.\"\n\r", 59, 15000);
+
+    // Check Wi-Fi connection status
+    xil_printf("Checking Wi-Fi connection status (AT+CWJAP?)...\n\r");
+    sendCommandAndWait(&myESP32, "AT+CWJAP?\r\n", 11, 2000);
+
+    // Get IP address (optional)
+    xil_printf("Retrieving IP address (AT+CIFSR)...\n\r");
+    sendCommandAndWait(&myESP32, "AT+CIFSR\r\n", 11, 1000);
+
+    // Enable multiple connections
+    xil_printf("Enabling multiple connections (AT+CIPMUX=1)...\n\r");
+    sendCommandAndWait(&myESP32, "AT+CIPMUX=1\r\n", 13, 2000);
+
+    // Start TCP server
+    xil_printf("Starting TCP on port 80 (AT+CIPSERVER)...\n\r");
+    sendCommandAndWait(&myESP32, "AT+CIPSERVER=1,80\r\n", 20, 2000);
+
+    xil_printf("ESP32 is now running...\n\r");
+
+    driverInit();
+
+    while (1) {
+        // Handle terminal input for AT commands if no client is connected
+        if (!client_connected) {
+            num_received = HostUart_Recv(&myHostUart, &recv_buffer, 1);
+            if (num_received > 0) {
+                xil_printf("%c", recv_buffer);
+                ESP32_Send(&myESP32, &recv_buffer, 1);
+            }
+        }
+
+        // Check for data from ESP32
+        num_received = ESP32_Recv(&myESP32, &recv_buffer, 1);
+        if (num_received > 0) {
+            xil_printf("%c", recv_buffer);
+
+            // Check for client connection or disconnection
+            if (strstr((char *)&recv_buffer, "0,CONNECT")) {
+                xil_printf("Client connected.\n");
+                client_connected = 1;
+            } else if (strstr((char *)&recv_buffer, "0,CLOSED")) {
+                xil_printf("Client disconnected.\n");
+                client_connected = 0;
+            }
+
+            // Process received data
+            if (recv_buffer == '\n' || recv_buffer == '\r') {
+                command_buffer[command_index] = '\0'; // Null-terminate the string
+
+                if (strncmp(command_buffer, "+IPD,", 5) == 0) {
+                    char *data_start = strchr(command_buffer, ':');
+                    if (data_start != NULL) {
+                        processCommand(data_start + 1);
+                    }
+                }
+
+                command_index = 0;
+            } else if (command_index < sizeof(command_buffer) - 1) {
+                command_buffer[command_index++] = recv_buffer;
+            } else {
+                xil_printf("Command buffer overflow, resetting...\n");
+                command_index = 0;
+            }
+        }
+    }
+}
+
+void DemoCleanup() {
+    DisableCaches();
+}
+
+int main() {
+    DemoInitialize();
+    DemoRun();
+    DemoCleanup();
+    return 0;
+}
+
+void EnableCaches() {
+#ifdef __MICROBLAZE__
+#ifdef XPAR_MICROBLAZE_USE_DCACHE
+    Xil_DCacheEnable();
+#endif
+#ifdef XPAR_MICROBLAZE_USE_ICACHE
+    Xil_ICacheEnable();
+#endif
+#endif
+}
+
+void DisableCaches() {
+#ifdef __MICROBLAZE__
+#ifdef XPAR_MICROBLAZE_USE_DCACHE
+    Xil_DCacheDisable();
+#endif
+#ifdef XPAR_MICROBLAZE_USE_ICACHE
+    Xil_ICacheDisable();
+#endif
+#endif
+}

@@ -1,0 +1,16 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Fri Nov 29 14:07:27 2024
+# Process ID: 14700
+# Current directory: C:/vivado_proj/pmod_esp32
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent20020 C:\vivado_proj\pmod_esp32\pmod_esp32.xpr
+# Log file: C:/vivado_proj/pmod_esp32/vivado.log
+# Journal file: C:/vivado_proj/pmod_esp32\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/vivado_proj/pmod_esp32/pmod_esp32.xpr
+open_bd_design {C:/vivado_proj/pmod_esp32/pmod_esp32.srcs/sources_1/bd/design_1/design_1.bd}
+update_compile_order -fileset sources_1
+launch_sdk -workspace C:/vivado_proj/pmod_esp32/pmod_esp32.sdk -hwspec C:/vivado_proj/pmod_esp32/pmod_esp32.sdk/design_1_wrapper.hdf
