@@ -1,6 +1,6 @@
 # Pmod esp32 using with nexys4 for led switching
 
-##Project Description:
+## Project Description:
 
 This project use Pmod esp32 for communication between phone and fpga board for the build-in led switching. 
 When the Fpga is power on, the esp32 setting up for the communication and connect to the predefined station.
