@@ -1,6 +1,6 @@
 /*
- * main.c - ESP32 Web Server Client Mode
- * Connects to Wi-Fi and hosts a simple web server.
+ * main.c - ESP32
+ * 
  */
 
 #include "xparameters.h"
