@@ -131,7 +131,7 @@ void DemoRun() {
 
     // Connect to Wi-Fi
     xil_printf("Connecting to Wi-Fi Network (AT+CWJAP)...\r\n");
-    sendCommandAndWait(&myESP32, "AT+CWJAP=\"Kozsi\",\"123456789\"\r\n", 34, 10000);
+    sendCommandAndWait(&myESP32, "AT+CWJAP=\"Kozsi\",\"123456789\"\r\n", 34, 10000); //Please replace for your SSID and password!
 
     // Enable multiple connections
     xil_printf("Enabling multiple connections (AT+CIPMUX=1)...\r\n");
